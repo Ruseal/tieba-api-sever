@@ -16,6 +16,6 @@ const {
 const userRouter = new Router({ prefix: '/user' })   //创建路由实例，并且定义路由前缀地址
 
 userRouter.post('/register', verifyRegister, encryptedPassword, register)
-userRouter.post('login',verifyLogin,login)
+userRouter.post('/login',verifyLogin,login)
 
 module.exports = userRouter
