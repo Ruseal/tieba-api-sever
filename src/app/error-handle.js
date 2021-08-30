@@ -16,6 +16,14 @@ const errorHandle = (error, ctx) => {
       status = 500
       message = '服务器错误'
       break
+    case errorType.USER_DOES_NOT_EXISTS:
+      status = 400
+      message = '用户名不存在'
+      break
+    case errorType.PASSWORD_MISTAKE:
+      status = 400
+      message = '密码错误'
+      break
     default:
       status = 404
       message = '未知错误'
