@@ -19,6 +19,7 @@ module.exports = {
   MYSQL_POLL,
 
   APP_PORT,
+  APP_HOST,
 
   NAME_LENGTH,
   MIN_PASSWORD_LENGTH,

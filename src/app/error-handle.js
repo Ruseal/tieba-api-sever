@@ -24,6 +24,18 @@ const errorHandle = (error, ctx) => {
       status = 400
       message = '密码错误'
       break
+    case errorType.INVALID_TOKEN:
+      status = 401
+      message = 'token未授权'
+      break
+    case errorType.TOKEN_EXPIRED:
+      status = 401
+      message = 'token已过期'
+      break
+    case errorType.UNPERMISSION:
+      status = 401
+      message = '该用户无操作权限'
+      break
     default:
       status = 404
       message = '未知错误'
