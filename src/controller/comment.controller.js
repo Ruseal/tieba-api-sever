@@ -25,10 +25,10 @@ class CommentController {
 
   async createReply(ctx) {
     try {
-      const { content, articleId } = ctx.request.body
-      const { commentId } = ctx.params
+      const { content, articleId, commentId } = ctx.request.body
+      const { commentReplyId } = ctx.params
       const { id } = ctx.user
-      const result = await commentService.createReply(content, id, articleId, commentId)
+      const result = await commentService.createReply(content, articleId, commentId, commentReplyId,id)
       ctx.body = {
         status: 200,
         msg: '回复评论成功',
@@ -60,6 +60,7 @@ class CommentController {
   async commentList(ctx) {
     try {
       const { articleId, offset, size } = ctx.query
+      if (articleId === undefined) throw new Error()
       const data = await commentService.getCommentListByArticleId(articleId, offset, size)
       ctx.body = {
         status: 200,

@@ -15,7 +15,8 @@ const {
   login,
   token,
   userAvatarInfo,
-  removeLoginStatus
+  removeLoginStatus,
+  getUserMessage
 } = require('../controller/user.controller')
 
 
@@ -26,5 +27,6 @@ userRouter.post('/login', verifyLogin, login)
 userRouter.post('/token', verifyAuth, token)
 userRouter.get('/:userId/avatar', userAvatarInfo)  //查询用户头像地址的接口路由
 userRouter.get('/exitLogin', removeLoginStatus)
+userRouter.get('/message', verifyAuth, getUserMessage)
 
 module.exports = userRouter

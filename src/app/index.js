@@ -16,7 +16,7 @@ app.use(cors({
   exposeHeaders: ['www-Authenticate', 'Server-Authorization'],
   maxAge: 5,
   credentials: true,
-  allowMethods: ['GET', 'POST', 'DELETE','PATCH'],
+  allowMethods: ['GET', 'POST', 'DELETE', 'PATCH'],
   allowHeaders: ['Content-Type', 'Authorization', 'Accept']
 }))
 routers(app)                                //路由入口

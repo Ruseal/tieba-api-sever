@@ -11,15 +11,15 @@ const { LOGIN_STATUS_OBJ, TOKEN_SAVE_TIME } = require('../constents/global')
 
 class UserController {
   async register(ctx) {
-    const { name, password } = ctx.request.body
+    const { username, password } = ctx.request.body
     try {
-      const result = await userService.createUser(name, password)
+      const result = await userService.createUser(username, password)
       ctx.body = {
         status: 200,
         msg: '注册成功',
         data: {
           id: result.insertId,
-          name
+          username
         },
       }
     } catch (e) {
@@ -32,7 +32,6 @@ class UserController {
   //用户登入返回token
   login(ctx) {
     const { id, username } = ctx.user
-    // const { loginStatusObj } = require('../constents/global')
     LOGIN_STATUS_OBJ.userId = id
     setTimeout(() => {
       LOGIN_STATUS_OBJ.userId = null
@@ -85,6 +84,21 @@ class UserController {
     }
   }
 
+  async getUserMessage(ctx) {
+    try {
+      const { id } = ctx.user
+      const result = await userService.userMessage(id)
+      if (!result) throw new Error()
+      ctx.body = {
+        status: 200,
+        msg: '获取用户信息成功',
+        data: result
+      }
+    } catch (e) {
+      const error = new Error(errorType.SERVER_ERROR)
+      return ctx.app.emit('error', error, ctx)
+    }
+  }
 }
 
 module.exports = new UserController()

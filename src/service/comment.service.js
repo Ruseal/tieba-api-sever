@@ -1,5 +1,5 @@
 const connection = require('../app/database')
-const { loginStatusObj } = require('../constents/global')
+const { LOGIN_STATUS_OBJ } = require('../constents/global')
 
 class CommentService {
   async createComment(content, userId, articleId,) {
@@ -8,9 +8,9 @@ class CommentService {
     return result
   }
 
-  async createReply(content, userId, articleId, commentId) {
-    const sql = `INSERT INTO comment (content,user_id,post_id,comment_id) VALUES(?,?,?,?)`
-    const [result] = await connection.execute(sql, [content, userId, articleId, commentId])
+  async createReply(content, articleId, commentId, commentReplyId, userId) {
+    const sql = `INSERT INTO comment (content,user_id,post_id,comment_id,comment_reply_id) VALUES(?,?,?,?,?)`
+    const [result] = await connection.execute(sql, [content, userId, articleId, commentId, commentReplyId])
     return result
   }
 
@@ -37,24 +37,48 @@ class CommentService {
       LEFT JOIN USER u ON c.user_id = u.id 
       WHERE post_id = ? AND comment_id IS NULL
       LIMIT ?,?`
-    const [result] = await connection.execute(sql, [loginStatusObj.userId, articleId, offset, size])
+
+    const [result] = await connection.execute(sql, [LOGIN_STATUS_OBJ.userId, articleId, offset, size])
     return result
+
+
   }
 
   async getReplyListByCommentId(commentId) {
+    // const sql = `
+    //   SELECT 
+    //     c.id id,c.content content,c.createAt createTime, 
+    //     JSON_OBJECT('id',u.id,'username',u.username,'nickname',u.nickname,
+    //                 'avatar',u.avatar_url,'members',u.members ) author,
+    //     (SELECT COUNT(*) FROM comment_like_user WHERE comment_id = c.id) likeCount,
+    //     @id:=? yourUserId,
+    //     (SELECT IF(COUNT(*) != 0,1,0) FROM comment_like_user WHERE comment_id = c.id AND user_id = @id) isLike
+    //   FROM comment c
+    //   LEFT JOIN user u ON c.user_id = u.id 
+    //   WHERE c.comment_id = ? AND c.comment_id IS NOT NULL
+    // `
     const sql = `
       SELECT 
         c.id id,c.content content,c.createAt createTime, 
         JSON_OBJECT('id',u.id,'username',u.username,'nickname',u.nickname,
-                    'avatar',u.avatar_url,'members',u.members ) author,
+                   'avatar',u.avatar_url,'members',u.members ) author,
         (SELECT COUNT(*) FROM comment_like_user WHERE comment_id = c.id) likeCount,
         @id:=? yourUserId,
-        (SELECT IF(COUNT(*) != 0,1,0) FROM comment_like_user WHERE comment_id = c.id AND user_id = @id) isLike
+        (SELECT IF(COUNT(*) != 0,1,0) FROM comment_like_user WHERE comment_id = c.id AND user_id = @id) isLike,
+        c.comment_id toComment,
+        ((SELECT 
+            JSON_OBJECT('replyCommentId',IF(toComment!=cr.id,cr.id,NULL),'toReplyUserId',ur.id,
+            'toReplyUserName',ur.username,'toReplyNickName',ur.nickname
+            ) 
+         FROM comment cr
+         LEFT JOIN user ur ON cr.user_id=ur.id
+         WHERE cr.id=c.comment_reply_id)
+         ) toReply
       FROM comment c
       LEFT JOIN user u ON c.user_id = u.id 
-      WHERE c.comment_id = ? AND c.comment_id IS NOT NULL
-    `
-    const [result] = await connection.execute(sql, [loginStatusObj.userId, commentId])
+      WHERE c.comment_id = ? AND c.comment_id IS NOT NULL`
+
+    const [result] = await connection.execute(sql, [LOGIN_STATUS_OBJ.userId, commentId])
     return result
   }
 

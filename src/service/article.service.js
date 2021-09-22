@@ -23,6 +23,7 @@ class ArticleService {
         (SELECT COUNT(*) FROM post_like_user WHERE post_id = p.id) likeCount,
         (SELECT COUNT(*) FROM comment WHERE post_id = p.id) commentCount,
         @id:=? yourUserId,
+        (SELECT JSON_OBJECT('id',id,'username',username,'nickname',nickname,'avatar',avatar_url) FROM user WHERE id=@id) yourUser,
         (SELECT IF(COUNT(*) != 0,1,0) FROM post_start_user WHERE post_id = p.id AND user_id = @id) isStart,
         (SELECT IF(COUNT(*) != 0,1,0) FROM post_like_user WHERE post_id = p.id AND user_id = @id) isLike,
         (SELECT JSON_ARRAYAGG(CONCAT('http://localhost:8000/article/images/',filename)) FROM post_pictrue WHERE post_id = p.id) imageList
@@ -37,7 +38,7 @@ class ArticleService {
   async getArticleList(offset, size) {
     const sql = `
       SELECT 
-        p.id id,p.title title,p.text TEXT,p.createAt createTime,
+        p.id id,p.title title,p.text test,p.createAt createTime,
         JSON_OBJECT('id',t.id,'tiebaName',t.name,'tiebaAvatarUrl',t.avatar_url,
 	         'focusCount',(SELECT COUNT(*) FROM tieba_focus_user WHERE tieba_id = t.id),
 	         'contentCount',(SELECT COUNT(*)+(SELECT COUNT(*) FROM post WHERE tieba_id = t.id) 

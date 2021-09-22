@@ -18,6 +18,7 @@ const fmCheck = (username, password) => {
 // 验证注册
 const verifyRegister = async (ctx, next) => {
   const { username, password } = ctx.request.body
+  
   // ---------------格式校验-------------
   if (fmCheck(username, password)) {
     const error = new Error(errorType.USER_OR_PASSWORD_RULE_IS_INCORRECT)
@@ -48,7 +49,6 @@ const encryptedPassword = async (ctx, next) => {
 // 验证登入
 const verifyLogin = async (ctx, next) => {
   const { username, password } = ctx.request.body
-  console.log( username, password);
   // --------------------格式校验----------------
   if (fmCheck(username, password)) {
     const error = new Error(errorType.USER_OR_PASSWORD_RULE_IS_INCORRECT)

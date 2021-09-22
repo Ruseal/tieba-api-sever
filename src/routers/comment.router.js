@@ -20,7 +20,7 @@ const {
 const commentRouter = new Router({ prefix: '/comment' })
 
 commentRouter.post('/', verifyAuth, createComment)
-commentRouter.post('/:commentId/reply', verifyAuth, createReply)
+commentRouter.post('/:commentReplyId/reply', verifyAuth, createReply)
 commentRouter.delete('/:commentId', verifyAuth, verifyPermission,deleteComment)
 commentRouter.get('/',commentList)
 commentRouter.get('/:commentId/reply',replyList)
