@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const { PUBLIC_KEY } = require('../app/config')
 const errorType = require('../constents/error-type-text')   //导入错误信息常量
 const authService = require('../service/auth.service')
+const { LOGIN_STATUS_OBJ: { defaultCreateId } } = require('../constents/global')
 
 const verifyAuth = async (ctx, next) => {
   const { authorization } = ctx.headers     //获取前端传入的token的值
@@ -34,8 +35,7 @@ const verifyPermission = async (ctx, next) => {
   const { id } = ctx.user
   try {
     const isPermission = await authService.checkAuth(tableName, tableNameId, id)
-
-    if (!isPermission) throw new Error()
+    if ((!defaultCreateId.includes(id)) && (!isPermission)) throw new Error()
     await next()
   } catch (e) {
     const error = new Error(errorType.UNPERMISSION)
@@ -56,10 +56,16 @@ const verifyTiebaAuth = async (ctx, next) => {
   }
 }
 
-// const authLogin
+const verifyAdminAuth = async (ctx, next) => {
+  const { id } = ctx.user
+  const error = new Error(errorType.UNPERMISSION)
+  if (!defaultCreateId.includes(id)) return ctx.app.emit('error', error, ctx)
+  await next()
+}
 
 module.exports = {
   verifyAuth,
   verifyPermission,
-  verifyTiebaAuth
+  verifyTiebaAuth,
+  verifyAdminAuth
 }

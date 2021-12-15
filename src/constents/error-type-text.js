@@ -8,6 +8,7 @@ const PASSWORD_MISTAKE = 'password_mistake'
 const INVALID_TOKEN = 'invalid_token'
 const TOKEN_EXPIRED ='token_expired'
 const UNPERMISSION = 'unpermission'
+const TIEBAE_ALREADY_EXISTS = 'tieba_already_exists'
 
 
 module.exports = {
@@ -18,5 +19,6 @@ module.exports = {
   PASSWORD_MISTAKE,
   INVALID_TOKEN,
   TOKEN_EXPIRED,
-  UNPERMISSION
+  UNPERMISSION,
+  TIEBAE_ALREADY_EXISTS
 }

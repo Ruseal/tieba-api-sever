@@ -36,6 +36,10 @@ const errorHandle = (error, ctx) => {
       status = 401
       message = '该用户无操作权限'
       break
+    case errorType.TIEBAE_ALREADY_EXISTS:
+      status = 400
+      message = '贴吧名已存在'
+      break
     default:
       status = 404
       message = '未知错误'
