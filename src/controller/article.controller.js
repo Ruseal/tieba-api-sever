@@ -39,14 +39,19 @@ class ArticleController {
 
   async articleList(ctx) {
     try {
-      const { offset, size } = ctx.query
-      const data = await articleService.getArticleList(offset, size)
+      const { size, strId, active, userId } = ctx.query
+      let sqlStr = ``
+      if (active === '0') {
+        sqlStr = `AND p.user_id IN (SELECT user_to_id FROM user_focus_user WHERE user_by_id=${userId})`
+      }
+      const result = await articleService.getArticleList(size, strId, sqlStr)
       ctx.body = {
         status: 200,
         msg: '查询贴子列表成功',
-        data
+        data: result
       }
     } catch (e) {
+      console.log(e);
       const error = new Error(errorType.SERVER_ERROR)
       return ctx.app.emit('error', error, ctx)
     }
@@ -140,6 +145,20 @@ class ArticleController {
       const articlePictrueInfo = await fileService.getArticlePictrueByFilename(filename)
       ctx.response.set('content-type', articlePictrueInfo.mimetype)            //另浏览器识别该文件为图片，否则当做文件直接下载下来
       ctx.body = fs.createReadStream(`${ARTICLE_PICTRUE_PATH}/${filename}`)
+    } catch (e) {
+      const error = new Error(errorType.SERVER_ERROR)
+      return ctx.app.emit('error', error, ctx)
+    }
+  }
+
+  async createTiebaArticle(ctx) {
+    try {
+      const { title, text } = ctx.request.body
+      const { tiebaId } = ctx.params
+      await articleService.createArticleByCreateTieba(title, text, tiebaId)
+      ctx.body = {
+        status: 200,
+      }
     } catch (e) {
       console.log(e);
       const error = new Error(errorType.SERVER_ERROR)

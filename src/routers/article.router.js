@@ -14,7 +14,8 @@ const {
   removeArticleLike,
   addStart,
   removeStart,
-  articlePictrueUrl
+  articlePictrueUrl,
+  createTiebaArticle
 } = require('../controller/article.controller')
 
 const articleRouter = new Router({prefix:'/article'})
@@ -28,5 +29,6 @@ articleRouter.delete('/:articleId/unlike',verifyAuth,removeArticleLike)
 articleRouter.post('/:articleId/start',verifyAuth,addStart)
 articleRouter.delete('/:articleId/unstart',verifyAuth,removeStart)
 articleRouter.get('/images/:filename',articlePictrueUrl)
+articleRouter.post('/:tiebaId/tieba',createTiebaArticle)
 
 module.exports = articleRouter

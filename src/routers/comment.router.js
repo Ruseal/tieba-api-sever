@@ -13,7 +13,10 @@ const {
   replyList,
   addCommentLike,
   removeCommentLike,
-  commentPictrueUrl
+  commentPictrueUrl,
+  userReply,
+  getBadge,
+  clearBadge
 } = require('../controller/comment.controller')
 
 
@@ -27,5 +30,8 @@ commentRouter.get('/:commentId/reply',replyList)
 commentRouter.post('/:commentId/like',verifyAuth,addCommentLike)
 commentRouter.delete('/:commentId/unlike',verifyAuth,removeCommentLike)
 commentRouter.get('/images/:filename',commentPictrueUrl)
+commentRouter.get('/userreply',verifyAuth,userReply)
+commentRouter.get('/badge',verifyAuth,getBadge)
+commentRouter.patch('/clear/badge',verifyAuth,clearBadge)
 
 module.exports = commentRouter

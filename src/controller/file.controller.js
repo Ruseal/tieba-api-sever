@@ -2,8 +2,8 @@ const fileService = require("../service/file.service")
 const userService = require("../service/user.service")
 const tiebaService = require("../service/tieba.service")
 const errorType = require("../constents/error-type-text")
-// const { USER_AVATAR_PATH } = require('../constents/file.path')
 const { APP_HOST, APP_PORT } = require('../app/config')
+const { LOGIN_STATUS_OBJ: { adminId } } = require('../constents/global')
 
 class FileController {
   async saveUserAvatar(ctx) {
@@ -31,7 +31,7 @@ class FileController {
       const { filename, mimetype, size } = ctx.req.file
       await fileService.uploadTiebaAvatar(filename, mimetype, size, tiebaId)
       const tiebaAvatarUrl = `${APP_HOST}:${APP_PORT}/tieba/${tiebaId}/avatar`
-      await tiebaService.updateUserAvatarUrlBytiebaId(tiebaAvatarUrl, tiebaId)
+      await tiebaService.updateTiebaAvatarUrlBytiebaId(tiebaAvatarUrl, tiebaId)
       ctx.body = {
         tiebaAvatarUrl,
         status: 200,
@@ -75,6 +75,23 @@ class FileController {
       ctx.body = {
         status: 200,
         msg: '上传贴子的评论图片成功'
+      }
+    } catch (e) {
+      const error = new Error(errorType.SERVER_ERROR)
+      return ctx.app.emit('error', error, ctx)
+    }
+  }
+
+  async saveBanner(ctx) {
+    try {
+      const files = ctx.req.files
+      for (let file of files) {
+        const { filename, mimetype, size } = file
+        await fileService.uploadBanner(filename, mimetype, size, adminId)
+      }
+      ctx.body = {
+        status: 200,
+        msg: '上传分类页轮播图成功'
       }
     } catch (e) {
       const error = new Error(errorType.SERVER_ERROR)

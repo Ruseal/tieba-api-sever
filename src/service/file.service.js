@@ -50,6 +50,12 @@ class FileService {
     const [result] = await connection.execute(sql, [filename])
     return result
   }
+
+  async uploadBanner(filename, mimetype, size, userId) {
+    const sql = `INSERT INTO pictrue (filename,mimetype,size,user_id,name) VALUES(?,?,?,?,?)`
+    const [result] = await connection.execute(sql, [filename, mimetype, size, userId, 'banner'])
+    return result
+  }
 }
 
 module.exports = new FileService()

@@ -16,7 +16,20 @@ const {
   token,
   userAvatarInfo,
   removeLoginStatus,
-  getUserMessage
+  getUserMessage,
+  userRecordTieba,
+  getRecordList,
+  isLogin,
+  focusUser,
+  unFocusUser,
+  getUserDetail,
+  labelObjList,
+  updateUser,
+  getUserStar,
+  recordHistory,
+  getRecordHistory,
+  clearUserHistory,
+  openMember
 } = require('../controller/user.controller')
 
 
@@ -28,5 +41,18 @@ userRouter.post('/token', verifyAuth, token)
 userRouter.get('/:userId/avatar', userAvatarInfo)  //查询用户头像地址的接口路由
 userRouter.get('/exitLogin', removeLoginStatus)
 userRouter.get('/message', verifyAuth, getUserMessage)
+userRouter.post('/:tiebaId/record', verifyAuth, userRecordTieba)
+userRouter.get('/recordlist', verifyAuth, getRecordList)
+userRouter.get('/islogin', verifyAuth, isLogin)
+userRouter.post('/focus', verifyAuth, focusUser)
+userRouter.delete('/unfocus', verifyAuth, unFocusUser)
+userRouter.get('/:userId/detail', getUserDetail)
+userRouter.get('/:userId/labellist', labelObjList)
+userRouter.patch('/update', verifyAuth, updateUser)
+userRouter.get('/star', verifyAuth, getUserStar)
+userRouter.post('/history', verifyAuth, recordHistory)
+userRouter.get('/history', verifyAuth, getRecordHistory)
+userRouter.delete('/history', verifyAuth, clearUserHistory)
+userRouter.patch('/member', verifyAuth, openMember)
 
 module.exports = userRouter
